@@ -210,6 +210,28 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
+-- ── 9. SITE PAGE VIEWS ──────────────────────────────────────
+alter table public.profiles
+  add column if not exists page_views bigint not null default 0;
+
+create or replace function public.increment_site_page_views()
+returns bigint
+language plpgsql
+security definer
+as $$
+declare
+  new_count bigint;
+begin
+  update public.profiles
+  set page_views = page_views + 1
+  returning page_views into new_count;
+  return new_count;
+end;
+$$;
+
+grant execute on function public.increment_site_page_views() to anon;
+grant execute on function public.increment_site_page_views() to authenticated;
+
 -- ── DONE ─────────────────────────────────────────────────────
 -- ✅ ตาราง / RLS / Storage buckets / Auth trigger พร้อมทั้งหมด
 -- ขั้นต่อไป: node create-admin.mjs  เพื่อสร้าง admin account

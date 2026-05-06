@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-gas
 
 # Environment — อย่า commit ไฟล์นี้เด็ดขาด (มี API keys)
 .env.local
